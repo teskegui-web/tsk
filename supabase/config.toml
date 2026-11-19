@@ -1,0 +1,4 @@
+[functions.financial-ai]
+verify_jwt = false
+# A função verifica explicitamente o access token no Auth antes de chamar a IA.
+entrypoint = "./functions/financial-ai/index.js"

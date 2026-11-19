@@ -6,8 +6,8 @@ const { withBuildSourceFile } = require('@expo/config-plugins/build/ios/XcodePro
 
 module.exports = function withTskSiri(config) {
   config = withInfoPlist(config, mod => {
-    mod.modResults.NSSiriUsageDescription = 'Use a Siri para lançar despesas no Agente TSK.';
-    mod.modResults.CFBundleSpokenName = 'Agente TSK';
+    mod.modResults.NSSiriUsageDescription = 'Use a Siri para lançar despesas no Agente Financeiro.';
+    mod.modResults.CFBundleSpokenName = 'Agente Financeiro';
     mod.modResults.INAlternativeAppNames = [{ INAlternativeAppName: 'Agente', INAlternativeAppNamePronunciationHint: 'Agente' }];
     return mod;
   });

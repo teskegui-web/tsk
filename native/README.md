@@ -12,7 +12,7 @@ O reconhecimento usa `requiresOnDeviceRecognition: true` em português brasileir
 
 ## Siri
 
-A ação nativa **Lançar gasto** recebe um parâmetro de texto **Gasto**. Use **E aí, Siri, lance no Agente TSK**. A Siri pode solicitar **Qual foi o gasto?**; responda **dez reais em gasolina**. O apelido Agente está declarado, mas o reconhecimento de **lance no agente dez reais de gasolina** em uma única frase depende da Siri/iOS e só pode ser validado no aparelho. Não há promessa de correspondência exata.
+A ação nativa **Lançar gasto** recebe um parâmetro de texto **Gasto**. Use **E aí, Siri, lance no Agente Financeiro**. A Siri pode solicitar **Qual foi o gasto?**; responda **dez reais em gasolina**. O apelido Agente está declarado, mas o reconhecimento de **lance no agente dez reais de gasolina** em uma única frase depende da Siri/iOS e só pode ser validado no aparelho. Não há promessa de correspondência exata.
 
 O intent abre o app e coloca o comando numa fila nativa local. O app interpreta o texto e salva o gasto antes de confirmar/retirar o comando da fila. Falhas mantêm o pendente para tentar novamente ou descartar. IDs persistentes impedem que receber o mesmo comando novamente duplique o gasto, inclusive após desfazer/excluir. A Siri informa envio para o app, e não sucesso financeiro antecipado.
 

@@ -1,4 +1,4 @@
-# Voz local do Agente TSK
+# Voz local do Agente Financeiro
 
 1. Abra `server/.env.local` e substitua apenas `COLE_SUA_CHAVE_AQUI` pela chave Gemini. Não compartilhe o arquivo nem publique a chave. Não use o prefixo EXPO_PUBLIC para essa chave.
 2. Na raiz do projeto, rode `npm.cmd run voice` em um terminal.

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Agente TSK",
+    "name": "Agente Financeiro",
     "slug": "tsk",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,7 +21,7 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "server",
+      "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -42,7 +42,15 @@
           "speechRecognitionPermission": "Permita reconhecer sua fala para ativar o Agente e registrar gastos."
         }
       ],
-      "./plugins/with-tsk-siri"
+      "./plugins/with-tsk-siri",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Selecione uma foto de boleto ou cupom para leitura.",
+          "cameraPermission": "Permita a câmera para fotografar boletos e cupons fiscais.",
+          "microphonePermission": "Permita o microfone para registrar lançamentos por voz."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

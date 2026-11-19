@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name = 'TskSiri'
   s.version = '1.0.0'
-  s.summary = 'Fila local de comandos Siri do Agente TSK'
+  s.summary = 'Fila local de comandos Siri do Agente Financeiro'
   s.description = s.summary
   s.license = { :type => 'MIT' }
-  s.author = 'Agente TSK'
+  s.author = 'Agente Financeiro'
   s.homepage = 'https://expo.dev'
   s.platforms = { :ios => '16.4' }
   s.swift_version = '5.9'

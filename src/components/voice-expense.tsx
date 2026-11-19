@@ -3,9 +3,11 @@ import { Alert, AppState, Platform, Pressable, StyleSheet, Text, View } from 're
 import Constants from 'expo-constants';
 import { AudioModule, RecordingPresets, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import { File } from 'expo-file-system';
+import type { Category, FamilyMember } from '@/services/expense-store';
+import type { Draft } from '@/services/text-expense';
+import { localDateKey } from '@/services/payables';
 
-type Draft = { transcript: string; description: string; cents: number; category: string; scope: string | null };
-export function VoiceExpense({ onDraft, disabled = false, onBusyChange }: { onDraft: (draft: Draft) => Promise<void>; disabled?: boolean; onBusyChange?: (busy: boolean) => void }) {
+export function VoiceExpense({ onDraft, disabled = false, onBusyChange, categories = [], members = [] }: { onDraft: (draft: Draft) => Promise<void>; disabled?: boolean; onBusyChange?: (busy: boolean) => void; categories?: Category[]; members?: FamilyMember[] }) {
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const [phase, setPhase] = useState<'idle' | 'recording' | 'busy'>('idle');
   const [message, setMessage] = useState('');
@@ -43,7 +45,7 @@ export function VoiceExpense({ onDraft, disabled = false, onBusyChange }: { onDr
       if (!host || host.endsWith('.exp.direct')) throw new Error('Use o Expo pela rede Wi-Fi local para conectar ao backend.');
       const response = await fetch(`http://${host}:3001/voice`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.EXPO_PUBLIC_VOICE_TOKEN || ''}` },
-        body: JSON.stringify({ audio: await file.base64(), mimeType: 'audio/mp4' }), signal: AbortSignal.timeout(55000),
+        body: JSON.stringify({ audio: await file.base64(), mimeType: 'audio/mp4', referenceDate: localDateKey(new Date()), categories: categories.map(item => ({ name: item.name, kind: item.kind })), members: members.map(item => ({ id: item.id, name: item.name, role: item.role })) }), signal: AbortSignal.timeout(55000),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Não foi possível interpretar o áudio.');
@@ -74,10 +76,10 @@ export function VoiceExpense({ onDraft, disabled = false, onBusyChange }: { onDr
 
   function press() {
     if (phase === 'recording') { void finish(); return; }
-    Alert.alert('Registrar por voz', 'A despesa identificada será adicionada automaticamente, com opção de desfazer. O áudio será enviado ao Google Gemini. Na faixa gratuita, o Google pode usar o conteúdo para melhorar seus produtos. Use gastos fictícios nos testes.', [{ text: 'Cancelar', style: 'cancel' }, { text: 'Gravar', onPress: () => { void start(); } }]);
+    Alert.alert('Registrar por voz', 'A receita ou despesa identificada será adicionada automaticamente, com opção de desfazer. O áudio, as categorias e os nomes/identificações dos membros ativos serão enviados ao Google Gemini para reconhecer o lançamento. Na faixa gratuita, o Google pode usar o conteúdo para melhorar seus produtos. Use gastos fictícios nos testes.', [{ text: 'Cancelar', style: 'cancel' }, { text: 'Gravar', onPress: () => { void start(); } }]);
   }
 
   if (Platform.OS === 'web') return <Text>O registro de voz desta versão está disponível no iPhone.</Text>;
-  return <View style={styles.card}><Text style={styles.title}>Fale seu gasto</Text><Text style={styles.hint}>Ex.: “Gastei vinte reais em gasolina”. Uma despesa de hoje por vez.</Text><Pressable accessibilityRole="button" disabled={disabled || phase === 'busy'} onPress={press} style={[styles.button, phase === 'recording' && styles.recording, phase === 'busy' && { opacity: 0.6 }]}><Text style={styles.buttonText}>{phase === 'recording' ? '■ Parar e interpretar' : phase === 'busy' ? 'Interpretando…' : '● Registrar por voz'}</Text></Pressable>{message ? <Text accessibilityLiveRegion="polite" style={styles.hint}>{message}</Text> : null}</View>;
+  return <View style={styles.card}><Text style={styles.title}>Fale seu lançamento</Text><Text style={styles.hint}>Diga “gastei vinte em gasolina” ou “recebi três mil de salário”. Também pode dizer “registre conta de energia de cem reais com vencimento dia doze de dezembro”. Um lançamento por vez.</Text><Pressable accessibilityRole="button" disabled={disabled || phase === 'busy'} onPress={press} style={[styles.button, phase === 'recording' && styles.recording, phase === 'busy' && { opacity: 0.6 }]}><Text style={styles.buttonText}>{phase === 'recording' ? '■ Parar e interpretar' : phase === 'busy' ? 'Interpretando…' : '● Registrar por voz'}</Text></Pressable>{message ? <Text accessibilityLiveRegion="polite" style={styles.hint}>{message}</Text> : null}</View>;
 }
 const styles = StyleSheet.create({ card: { backgroundColor: '#E2EFE7', borderRadius: 20, padding: 20, gap: 12 }, title: { color: '#17382F', fontSize: 20, fontWeight: '700' }, hint: { color: '#435F51', fontSize: 13, lineHeight: 20 }, button: { backgroundColor: '#19734F', padding: 17, borderRadius: 14, alignItems: 'center' }, recording: { backgroundColor: '#A33939' }, buttonText: { color: 'white', fontWeight: '700', fontSize: 16 } });
